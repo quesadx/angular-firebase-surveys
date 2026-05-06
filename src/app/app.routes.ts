@@ -9,6 +9,10 @@ export const routes: Routes = [
     loadComponent: () => import('./surveys/new-survey.component').then((m) => m.NewSurveyComponent)
   },
   {
+    path: 'surveys/wip',
+    loadComponent: () => import('./surveys/survey-wip.component').then((m) => m.SurveyWipComponent)
+  },
+  {
     path: 'surveys/:id',
     loadComponent: () => import('./surveys/survey-detail.component').then((m) => m.SurveyDetailComponent)
   },
