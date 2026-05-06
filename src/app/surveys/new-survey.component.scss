@@ -73,16 +73,22 @@ label {
 }
 
 input,
-textarea {
+textarea,
+button {
   width: 100%;
   border-radius: 12px;
   border: 1px solid #d4c6fa;
   padding: 12px 14px;
   line-height: 1.4;
   font-size: 0.98rem;
+  font-family: inherit;
   background: #ffffff;
   color: #1d152d;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+button {
+  width: auto;
 }
 
 input:focus,
