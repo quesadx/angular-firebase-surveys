@@ -1,52 +1,75 @@
-import { Component, signal, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from './services/auth';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgIf],
   template: `
-    <div style="padding: 20px;">
-      <h1>{{ title() }}</h1>
+    <!-- The Navbar is only visible if a user is logged in -->
+    <nav class="modern-navbar" *ngIf="authService.currentUser() as user">
+      <div class="navbar-container">
+        <!-- Left side: Brand -->
+        <div class="nav-brand">
+          <span class="logo-icon">📊</span>
+          <span class="brand-text">SurVot</span>
+        </div>
 
-      <div style="margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px;">
-        <h2>Estado de autenticación</h2>
-        @if (currentUser(); as user) {
-          <p><strong>UID:</strong> {{ user.uid }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p><strong>Nombre:</strong> {{ user.displayName }}</p>
-          <button (click)="logout()" style="padding: 10px 20px; cursor: pointer;">Cerrar sesión</button>
-        } @else {
-          <p>No autenticado</p>
-        }
+        <!-- Center: Navigation Links -->
+        <div class="nav-links">
+          <a routerLink="/surveys/new" routerLinkActive="active-link" class="nav-link"
+            >New Survey</a
+          >
+          <a routerLink="/surveys/wip" routerLinkActive="active-link" class="nav-link">Explore</a>
+        </div>
+
+        <!-- Right side: User Options -->
+        <div class="nav-user">
+          <!-- Show name or email using the logged in user Signal -->
+          <span class="user-greeting"
+            >Hello, <strong>{{ user.displayName || user.email }}</strong></span
+          >
+
+          <button (click)="logoutUser()" class="logout-btn">
+            Log Out
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
       </div>
+    </nav>
 
+    <!-- Aquí debajo de la navbar se dibujarán las demás pantallas de la app -->
+    <main class="app-content">
       <router-outlet />
-    </div>
+    </main>
   `,
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('angular-firebase-surveys');
-  protected readonly currentUser = signal<any>(null);
+  public authService = inject(AuthService);
+  private router = inject(Router);
 
-  private authService = inject(AuthService);
-  private auth = inject(Auth);
-
-  constructor() {
-    onAuthStateChanged(this.auth, (user) => {
-      this.currentUser.set(user);
-    });
-  }
-
-  async logout() {
+  async logoutUser() {
     try {
       await this.authService.logout();
-      console.log('Logout exitoso');
+      this.router.navigate(['/auth/login']);
     } catch (error) {
-      console.error('Error en logout:', error);
+      console.error('Error during logout:', error);
     }
   }
 }

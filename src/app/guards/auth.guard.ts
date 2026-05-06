@@ -1,26 +1,19 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
-import { map, take } from 'rxjs/operators';
-import { authState } from '@angular/fire/auth';
+import { Auth, authState } from '@angular/fire/auth';
+import { map } from 'rxjs/operators';
 
-/**
- * Auth Guard that protects routes requiring authentication.
- * Redirects unauthenticated users to /auth/login
- */
 export const authGuard: CanActivateFn = (route, state) => {
-  const auth = inject(Auth);
   const router = inject(Router);
+  const auth = inject(Auth);
 
   return authState(auth).pipe(
-    take(1),
     map((user) => {
-      if (user) {
-        return true;
+      if (!user) {
+        router.navigate(['/auth/login']);
+        return false;
       }
-
-      router.navigate(['/auth/login']);
-      return false;
-    })
+      return true;
+    }),
   );
 };
