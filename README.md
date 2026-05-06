@@ -2,6 +2,20 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.25.
 
+## Project overview
+
+Angular + Firebase survey app that lets users create surveys, share them via QR codes, and view details in real time.
+
+## Tech stack
+
+- Angular standalone components and reactive forms
+- Firebase Authentication and Firestore
+- angularx-qrcode for QR code generation
+
+## Environment setup
+
+Update the `appUrl` value in the environment file to match your deployment domain so QR codes encode the correct URL.
+
 ## Development server
 
 To start a local development server, run:
