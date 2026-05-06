@@ -201,10 +201,12 @@ export class NewSurveyComponent {
     try {
       const docRef = await this.surveyService.addSurvey(payload);
       this.saveState.set('saved');
-      await this.router.navigate(['/surveys', docRef.id]);
+      const targetId = docRef?.id ? docRef.id : 'wip';
+      await this.router.navigate(['/surveys', targetId]);
     } catch (error) {
       console.error('Error guardando encuesta:', error);
       this.saveState.set('invalid');
+      await this.router.navigate(['/surveys', 'wip']);
     } finally {
       this.isSaving.set(false);
     }
