@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   AbstractControl,
   FormArray,
@@ -10,6 +11,7 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
+import { SurveyService } from './survey.service';
 
 const minOptionsValidator = (min: number): ValidatorFn => {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -106,7 +108,9 @@ const minOptionsValidator = (min: number): ValidatorFn => {
           </div>
 
           <div class="actions">
-            <button class="primary" type="submit">Guardar</button>
+            <button class="primary" type="submit" [disabled]="isSaving()">
+              {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+            </button>
             <p class="hint">Se guardara cuando conectes Firestore.</p>
           </div>
 
@@ -122,10 +126,13 @@ const minOptionsValidator = (min: number): ValidatorFn => {
 })
 export class NewSurveyComponent {
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly router = inject(Router);
+  private readonly surveyService = inject(SurveyService);
 
   protected readonly minOptions = 2;
   protected readonly optionsCount = signal(this.minOptions);
   protected readonly saveState = signal<'idle' | 'invalid' | 'saved'>('idle');
+  protected readonly isSaving = signal(false);
 
   protected readonly form = this.fb.group({
     title: this.fb.control('', [Validators.required, Validators.maxLength(120)]),
@@ -176,7 +183,7 @@ export class NewSurveyComponent {
     return (control.touched || this.saveState() === 'invalid') && control.invalid;
   }
 
-  protected onSubmit(): void {
+  protected async onSubmit(): Promise<void> {
     if (this.form.invalid) {
       this.saveState.set('invalid');
       this.form.markAllAsTouched();
@@ -189,7 +196,17 @@ export class NewSurveyComponent {
       options: this.options.controls.map((control) => control.value.trim()).filter(Boolean)
     };
 
-    console.log('Survey draft:', payload);
-    this.saveState.set('saved');
+    this.isSaving.set(true);
+
+    try {
+      const docRef = await this.surveyService.addSurvey(payload);
+      this.saveState.set('saved');
+      await this.router.navigate(['/surveys', docRef.id]);
+    } catch (error) {
+      console.error('Error guardando encuesta:', error);
+      this.saveState.set('invalid');
+    } finally {
+      this.isSaving.set(false);
+    }
   }
 }
