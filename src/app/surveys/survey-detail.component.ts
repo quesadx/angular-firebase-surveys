@@ -23,16 +23,24 @@ import { SurveyService } from './survey.service';
           @let survey = (survey$ | async);
           @if (survey) {
             <div class="survey-detail">
-              <h2>{{ survey.title }}</h2>
-              <p class="subtitle">{{ survey.description || 'No description' }}</p>
+              <div class="detail-row">
+                <p class="detail-label">Title</p>
+                <h2 class="detail-title">{{ survey.title }}</h2>
+              </div>
+              <div class="detail-row">
+                <p class="detail-label">Subtitle</p>
+                <p class="subtitle">{{ survey.description || 'No description' }}</p>
+              </div>
 
               @if (shareUrl) {
-                <div class="qr-card">
+                <div class="qr-block">
                   <h3>Share this survey</h3>
-                  <qrcode [qrdata]="shareUrl" [width]="196" [errorCorrectionLevel]="'M'"></qrcode>
-                  <a class="share-link" [href]="shareUrl" target="_blank" rel="noreferrer">
-                    {{ shareUrl }}
-                  </a>
+                  <div class="qr-card">
+                    <qrcode [qrdata]="shareUrl" [width]="196" [errorCorrectionLevel]="'M'"></qrcode>
+                    <a class="share-link" [href]="shareUrl" target="_blank" rel="noreferrer">
+                      {{ shareUrl }}
+                    </a>
+                  </div>
                 </div>
               }
 
