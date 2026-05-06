@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================
+    // SURVEYS (ENCUESTAS)
+    // =========================
+    match /surveys/{surveyId} {
+
+      // cualquiera autenticado puede leer encuestas
+      allow read: if request.auth != null;
+
+      // solo usuarios autenticados pueden crear encuestas
+      allow create: if request.auth != null;
+
+      // solo el creador puede editar o borrar
+      allow update, delete: if request.auth != null
+        && request.auth.uid == resource.data.createdBy;
+    }
+
+    // =========================
+    // VOTES (SUBCOLECCIÓN)
+    // surveys/{surveyId}/votes/{userId}
+    // =========================
+    match /surveys/{surveyId}/votes/{userId} {
+
+      // un usuario SOLO puede crear su propio voto
+      allow create: if request.auth != null
+        && request.auth.uid == userId;
+
+      // solo usuarios autenticados pueden leer votos (para gráficos en tiempo real)
+      allow read: if request.auth != null;
+
+      // no se permite modificar ni borrar votos
+      allow update, delete: if false;
+    }
+  }
+}
