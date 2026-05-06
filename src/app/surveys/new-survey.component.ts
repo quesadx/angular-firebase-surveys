@@ -20,8 +20,25 @@ const minOptionsValidator = (min: number): ValidatorFn => {
       return { minOptions: { required: min, actual: 0 } };
     }
 
-    return array.length >= min ? null : { minOptions: { required: min, actual: array.length } };
+    // Count non-empty options (after trimming whitespace)
+    const nonEmptyCount = array.controls
+      .filter((ctrl) => (ctrl.value ?? '').trim().length > 0)
+      .length;
+
+    return nonEmptyCount >= min ? null : { minOptions: { required: min, actual: nonEmptyCount } };
   };
+};
+
+/**
+ * Validator to ensure option is not empty or just whitespace
+ */
+const optionNotEmptyValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  if (!control.value) {
+    return { required: true };
+  }
+
+  const trimmed = (control.value as string).trim();
+  return trimmed.length > 0 ? null : { required: true };
 };
 
 @Component({
@@ -32,45 +49,45 @@ const minOptionsValidator = (min: number): ValidatorFn => {
     <section class="page">
       <div class="card">
         <header class="card-header">
-          <p class="eyebrow">Formulario</p>
-          <h1>Nueva encuesta</h1>
-          <p class="subtitle">Crea una encuesta con al menos 2 opciones.</p>
+          <p class="eyebrow">Form</p>
+          <h1>New Survey</h1>
+          <p class="subtitle">Create a survey with at least 2 options.</p>
         </header>
 
         <form class="survey-form" [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="field">
-            <label for="title">Titulo</label>
+            <label for="title">Title</label>
             <input
               id="title"
               type="text"
               formControlName="title"
               maxlength="120"
-              placeholder="Ej: Sabor favorito"
+              placeholder="E.g.: Favorite flavor"
             />
             <div class="field-meta">
-              <span class="hint">Obligatorio</span>
+              <span class="hint">Required</span>
               <span class="counter">{{ titleLength() }}/120</span>
             </div>
             @if (isTitleInvalid()) {
-              <p class="error">El titulo es requerido.</p>
+              <p class="error">Title is required.</p>
             }
           </div>
 
           <div class="field">
-            <label for="description">Descripcion (opcional)</label>
+            <label for="description">Description (optional)</label>
             <textarea
               id="description"
               rows="4"
               formControlName="description"
-              placeholder="Comparte un poco mas de contexto"
+              placeholder="Share more context"
             ></textarea>
           </div>
 
           <div class="field">
             <div class="field-heading">
               <div>
-                <label>Opciones</label>
-                <p class="hint">Minimo {{ minOptions }} opciones. Actual: {{ optionsCount() }}.</p>
+                <label>Options</label>
+                <p class="hint">Minimum {{ minOptions }} options. Current: {{ optionsCount() }}.</p>
               </div>
             </div>
 
@@ -80,42 +97,45 @@ const minOptionsValidator = (min: number): ValidatorFn => {
                   <input
                     type="text"
                     [formControl]="optionCtrl"
-                    placeholder="Opcion {{ $index + 1 }}"
+                    placeholder="Option {{ $index + 1 }}"
                   />
                   <button
                     class="remove"
                     type="button"
                     (click)="removeOption($index)"
                     [disabled]="options.length <= minOptions"
-                    title="Eliminar opción"
+                    title="Remove option"
                   >
                     ✕
                   </button>
                 </div>
                 @if (showOptionError(optionCtrl)) {
-                  <p class="error">La opcion es requerida.</p>
+                  <p class="error">Option is required.</p>
                 }
               }
             </div>
 
             <div class="add-option-row">
-              <button class="ghost" type="button" (click)="addOption()">Agregar opcion</button>
+              <button class="ghost" type="button" (click)="addOption()">Add option</button>
             </div>
 
             @if (isOptionsInvalid()) {
-              <p class="error">Agrega al menos {{ minOptions }} opciones.</p>
+              <p class="error">Add at least {{ minOptions }} options.</p>
             }
           </div>
 
           <div class="actions">
             <button class="primary" type="submit" [disabled]="isSaving()">
-              {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+              {{ isSaving() ? 'Saving...' : 'Save' }}
             </button>
-            <p class="hint">Se guardara cuando conectes Firestore.</p>
           </div>
 
           @if (saveState() === 'saved') {
-            <div class="notice success">Encuesta lista para guardar (sin backend).</div>
+            <div class="notice success">Survey ready to save (no backend).</div>
+          }
+
+          @if (errorMessage()) {
+            <div class="notice error">{{ errorMessage() }}</div>
           }
         </form>
       </div>
@@ -133,6 +153,7 @@ export class NewSurveyComponent {
   protected readonly optionsCount = signal(this.minOptions);
   protected readonly saveState = signal<'idle' | 'invalid' | 'saved'>('idle');
   protected readonly isSaving = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.group({
     title: this.fb.control('', [Validators.required, Validators.maxLength(120)]),
@@ -157,7 +178,9 @@ export class NewSurveyComponent {
   }
 
   protected addOption(): void {
-    this.options.push(this.fb.control('', [Validators.required, Validators.maxLength(80)]));
+    this.options.push(
+      this.fb.control('', [optionNotEmptyValidator, Validators.maxLength(80)])
+    );
     this.optionsCount.set(this.options.length);
   }
 
@@ -196,17 +219,35 @@ export class NewSurveyComponent {
       options: this.options.controls.map((control) => control.value.trim()).filter(Boolean)
     };
 
+    // Validate options count after trim
+    if (payload.options.length < this.minOptions) {
+      this.errorMessage.set(`At least ${this.minOptions} options are required.`);
+      this.saveState.set('invalid');
+      return;
+    }
+
     this.isSaving.set(true);
+    this.errorMessage.set(null);
 
     try {
       const docRef = await this.surveyService.addSurvey(payload);
+      
+      if (!docRef?.id) {
+        throw new Error('Failed to save survey: No document ID returned');
+      }
+
       this.saveState.set('saved');
-      const targetId = docRef?.id ? docRef.id : 'wip';
-      await this.router.navigate(['/surveys', targetId]);
+      await this.router.navigate(['/surveys', docRef.id]);
     } catch (error) {
-      console.error('Error guardando encuesta:', error);
+      console.error('Error saving survey:', error);
       this.saveState.set('invalid');
-      await this.router.navigate(['/surveys', 'wip']);
+      
+      // Set user-friendly error message
+      if (error instanceof Error) {
+        this.errorMessage.set(error.message);
+      } else {
+        this.errorMessage.set('An error occurred while saving the survey. Please try again.');
+      }
     } finally {
       this.isSaving.set(false);
     }
