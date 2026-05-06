@@ -5,7 +5,7 @@ import { AuthService } from '../services/auth';
 @Component({
   selector: 'app-login',
   standalone: true,
-  template: `<div style="padding: 20px; text-align: center;"><p>Iniciando sesión...</p></div>`
+  template: `<div style="padding: 20px; text-align: center;"><p>Signing in...</p></div>`
 })
 export class LoginComponent {
   private authService = inject(AuthService);

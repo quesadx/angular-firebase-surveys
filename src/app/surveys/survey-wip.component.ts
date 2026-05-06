@@ -9,13 +9,13 @@ import { Component } from '@angular/core';
     <section class="page">
       <div class="card">
         <header class="card-header">
-          <p class="eyebrow">Encuesta</p>
+          <p class="eyebrow">Survey</p>
           <h1>Work in progress</h1>
-          <p class="subtitle">Esta vista está en desarrollo. Aquí iría la encuesta creada.</p>
+          <p class="subtitle">This view is under development. The created survey would go here.</p>
         </header>
 
         <div class="notice info">
-          <p>La encuesta aún no está disponible, pero te hemos redirigido a la página de encuesta.</p>
+          <p>The survey is not yet available, but we have redirected you to the survey page.</p>
         </div>
       </div>
     </section>

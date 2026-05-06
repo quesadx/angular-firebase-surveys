@@ -6,16 +6,20 @@ import {
   docData,
   DocumentReference,
   Firestore,
-  serverTimestamp
+  serverTimestamp,
+  Timestamp
 } from '@angular/fire/firestore';
+import { Auth, authState } from '@angular/fire/auth';
 import type { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 export interface Survey {
   id?: string;
   title: string;
   description: string;
   options: string[];
-  createdAt?: unknown;
+  createdAt?: Timestamp;
+  createdBy?: string;
 }
 
 @Injectable({
@@ -23,16 +27,28 @@ export interface Survey {
 })
 export class SurveyService {
   private readonly firestore = inject(Firestore);
+  private readonly auth = inject(Auth);
 
-  addSurvey(survey: Omit<Survey, 'id' | 'createdAt'>) {
-    return addDoc(collection(this.firestore, 'encuestas'), {
+  async addSurvey(survey: Omit<Survey, 'id' | 'createdAt' | 'createdBy'>) {
+    // Get current authenticated user
+    const currentUser = await firstValueFrom(authState(this.auth));
+    if (!currentUser) {
+      throw new Error('User must be authenticated to create a survey');
+    }
+
+    return addDoc(collection(this.firestore, 'surveys'), {
       ...survey,
+      createdBy: currentUser.uid,
       createdAt: serverTimestamp()
     });
   }
 
   getSurvey(id: string): Observable<Survey | undefined> {
-    const surveyDoc = doc(this.firestore, 'encuestas', id) as DocumentReference<Survey>;
-    return docData<Survey, Survey>(surveyDoc, { idField: 'id' }) as Observable<Survey | undefined>;
+    if (!id || id.trim() === '') {
+      throw new Error('Survey ID cannot be empty');
+    }
+
+    const surveyDoc = doc(this.firestore, 'surveys', id) as DocumentReference<Survey>;
+    return docData(surveyDoc, { idField: 'id' });
   }
 }
