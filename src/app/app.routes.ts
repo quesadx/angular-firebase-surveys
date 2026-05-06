@@ -8,5 +8,9 @@ export const routes: Routes = [
     path: 'surveys/new',
     loadComponent: () => import('./surveys/new-survey.component').then((m) => m.NewSurveyComponent)
   },
+  {
+    path: 'surveys/:id',
+    loadComponent: () => import('./surveys/survey-detail.component').then((m) => m.SurveyDetailComponent)
+  },
   { path: '**', redirectTo: '/auth/login' }
 ];
