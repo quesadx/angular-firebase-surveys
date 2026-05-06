@@ -250,6 +250,50 @@ button:disabled {
   font-size: 0.9rem;
 }
 
+.options-list h3 {
+  margin: 0 0 10px;
+}
+
+.options-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.option-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #e3d8ff;
+  background: linear-gradient(135deg, rgba(240, 233, 255, 0.9), rgba(255, 255, 255, 0.9));
+  box-shadow: 0 10px 20px rgba(98, 60, 186, 0.08);
+}
+
+.option-index {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #4b2fb8;
+  background: #efe8ff;
+  border: 1px solid #d8ccff;
+}
+
+.option-text {
+  font-weight: 600;
+  color: #2a1c3f;
+  word-break: break-word;
+}
+
 @keyframes rise {
   from {
     opacity: 0;

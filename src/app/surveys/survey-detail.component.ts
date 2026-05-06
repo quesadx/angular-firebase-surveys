@@ -1,14 +1,14 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { QRCodeModule } from 'angularx-qrcode';
+import { QRCodeComponent } from 'angularx-qrcode';
 import { environment } from '../../environments/environment';
 import { SurveyService } from './survey.service';
 
 @Component({
   selector: 'app-survey-detail',
   standalone: true,
-  imports: [AsyncPipe, QRCodeModule],
+  imports: [AsyncPipe, QRCodeComponent],
   template: `
     <section class="page">
       <div class="card">
@@ -38,9 +38,12 @@ import { SurveyService } from './survey.service';
 
               <div class="options-list">
                 <h3>Options</h3>
-                <ul>
-                  @for (option of survey.options; track option) {
-                    <li>{{ option }}</li>
+                <ul class="options-grid">
+                  @for (option of survey.options; track option; let idx = $index) {
+                    <li class="option-card">
+                      <span class="option-index">{{ idx + 1 }}</span>
+                      <span class="option-text">{{ option }}</span>
+                    </li>
                   }
                 </ul>
               </div>
