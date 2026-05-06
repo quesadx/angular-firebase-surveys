@@ -1,0 +1,13 @@
+{
+    "version": "0.2",
+    "ignorePaths": [
+        "docs"
+    ],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "testem"
+    ],
+    "ignoreWords": [],
+    "import": []
+}
