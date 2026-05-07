@@ -289,6 +289,57 @@ button:disabled {
   gap: 12px;
 }
 
+/* Styles for survey listing to match app visual language */
+.survey-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.survey-card {
+  display: block;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid #e3d8ff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(245,241,255,0.6));
+  box-shadow: 0 12px 24px rgba(98, 60, 186, 0.06);
+}
+
+.survey-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  color: #1d152d;
+}
+
+.survey-card .subtitle {
+  margin: 0 0 10px 0;
+  color: #5b4b79;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.card-actions .ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.vote-btn.primary {
+  width: auto;
+  justify-self: start;
+}
+
 .option-card {
   display: grid;
   grid-template-columns: auto 1fr;

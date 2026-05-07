@@ -71,6 +71,17 @@
   border-bottom-color: #7a5ad6;
 }
 
+/* Remove persistent browser focus ring for nav links and provide subtle focus-visible
+   which matches the brand without the default heavy outline */
+.nav-link:focus {
+  outline: none;
+  box-shadow: none;
+}
+.nav-link:focus-visible {
+  box-shadow: 0 6px 18px rgba(122, 90, 214, 0.12);
+  border-bottom-color: rgba(122, 90, 214, 0.6);
+}
+
 .nav-user {
   display: flex;
   align-items: center;

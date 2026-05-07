@@ -11,9 +11,9 @@ export const routes: Routes = [
     loadComponent: () => import('./surveys/new-survey.component').then((m) => m.NewSurveyComponent)
   },
   {
-    path: 'surveys/wip',
+    path: 'surveys',
     canActivate: [authGuard],
-    loadComponent: () => import('./surveys/survey-wip.component').then((m) => m.SurveyWipComponent)
+    loadComponent: () => import('./surveys/survey-home.component').then((m) => m.SurveyHomeComponent)
   },
   {
     path: 'surveys/:id',

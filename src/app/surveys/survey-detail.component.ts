@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { environment } from '../../environments/environment';
 import { SurveyService } from './survey.service';
+import { Auth, authState } from '@angular/fire/auth';
+import type { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-survey-detail',
@@ -51,9 +53,15 @@ import { SurveyService } from './survey.service';
                     <li class="option-card">
                       <span class="option-index">{{ idx + 1 }}</span>
                       <span class="option-text">{{ option }}</span>
+                      <button class="primary vote-btn" (click)="vote(option)" [disabled]="hasVoted() || isVoting()">
+                        {{ hasVoted() ? 'Voted' : 'Vote' }}
+                      </button>
                     </li>
                   }
                 </ul>
+                @if (hasVoted()) {
+                  <div class="notice success">Tu voto ha sido registrado: {{ userVote() }}</div>
+                }
               </div>
             </div>
           } @else {
@@ -68,15 +76,20 @@ import { SurveyService } from './survey.service';
 export class SurveyDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly surveyService = inject(SurveyService);
+  private readonly auth = inject(Auth);
 
   protected readonly isLoadingError = signal(false);
   protected readonly survey$;
   protected readonly shareUrl: string | null;
+  protected readonly hasVoted = signal(false);
+  protected readonly userVote = signal<string | null>(null);
+  protected readonly isVoting = signal(false);
+  protected readonly votes$: Observable<any> | null = null;
+  private surveyId: string | null = null;
 
   constructor() {
     const id = this.route.snapshot.paramMap.get('id');
     const trimmedId = id?.trim();
-
     this.shareUrl = trimmedId ? `${environment.appUrl}/surveys/${trimmedId}` : null;
 
     if (!trimmedId) {
@@ -84,12 +97,44 @@ export class SurveyDetailComponent {
       this.survey$ = null;
     } else {
       try {
+        this.surveyId = trimmedId;
         this.survey$ = this.surveyService.getSurvey(trimmedId);
+
+        // Listen for votes in real-time (for future result visualization)
+        // and listen for the current user's vote to disable UI when needed
+        authState(this.auth).subscribe((user) => {
+          if (user && this.surveyId) {
+            this.surveyService.getUserVote(this.surveyId, user.uid).subscribe((vote) => {
+              if (vote && (vote as any).option) {
+                this.userVote.set((vote as any).option);
+                this.hasVoted.set(true);
+              } else {
+                this.userVote.set(null);
+                this.hasVoted.set(false);
+              }
+            });
+          }
+        });
       } catch (error) {
         console.error('Error loading survey:', error);
         this.isLoadingError.set(true);
         this.survey$ = null;
       }
+    }
+  }
+
+  protected async vote(option: string) {
+    if (!this.surveyId || this.isVoting()) return;
+
+    this.isVoting.set(true);
+    try {
+      await this.surveyService.vote(this.surveyId, option);
+      this.userVote.set(option);
+      this.hasVoted.set(true);
+    } catch (error) {
+      console.error('Vote error:', error);
+    } finally {
+      this.isVoting.set(false);
     }
   }
 }
