@@ -1,116 +1,282 @@
-# AngularFirebaseSurveys
+# Angular Firebase Surveys
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.25.
+Aplicación web de encuestas en tiempo real desarrollada con **Angular 20** y **Firebase** para la actividad EIF209. Permite autenticación de usuarios, creación de encuestas, votación con control de duplicados, visualización inmediata de resultados con gráficos y acceso rápido mediante QR.
 
-## Project overview
+**URL desplegada:** https://angular-firebase-surveys.web.app
 
-Angular + Firebase survey app that lets users create surveys, share them via QR codes, and view details in real time.
+---
 
-## Tech stack
+## Tabla de contenidos
 
-- Angular standalone components, Signals, `inject()`, and lazy-loaded routes
-- Firebase Authentication, Firestore, and Firebase Hosting
-- Chart.js + ng2-charts for real-time results
-- angularx-qrcode for QR code generation
+- [Descripción general](#descripción-general)
+- [Tecnologías utilizadas](#tecnologías-utilizadas)
+- [Arquitectura del proyecto](#arquitectura-del-proyecto)
+- [Requerimientos cumplidos](#requerimientos-cumplidos)
+- [Despliegue](#despliegue)
+- [Desarrollo local](#desarrollo-local)
+- [Capturas de pantalla](#capturas-de-pantalla)
+- [Decisiones técnicas](#decisiones-técnicas)
 
-## Architecture
+---
 
-- `src/main.ts` boots the app with `bootstrapApplication()`.
-- `src/app/app.config.ts` registers router, Firebase, Firestore, Auth, and charts providers.
-- `src/app/app.routes.ts` uses lazy-loaded standalone components.
-- Firestore stores surveys in `surveys` and votes in `surveys/{surveyId}/votes`.
+## Descripción general
 
-## Project status
+El proyecto resuelve el flujo completo de una encuesta en línea:
 
-The application already covers the core assignment requirements:
+1. El usuario inicia sesión con Firebase Authentication (Google o correo).
+2. Crea una encuesta con título, descripción opcional y al menos 2 opciones.
+3. Comparte la encuesta con un QR que otros usuarios pueden escanear.
+4. Otros usuarios autenticados votan desde su dispositivo.
+5. Los resultados se actualizan en tiempo real sin recargar la página.
+6. El sistema previene votos duplicados mediante Firestore Security Rules.
 
-- Authentication with Firebase Auth
-- Survey creation and list view
-- Single vote per user enforced by Firestore rules
-- Real-time vote updates with Firestore listeners
-- Pie chart visualization for survey results
-- QR code to access each survey quickly
+## Tecnologías utilizadas
 
-## Deployment
+| Área | Tecnología | Propósito |
+|------|-----------|----------|
+| **Frontend** | Angular 20 (standalone) | Framework moderno sin NgModule |
+| **Reactivity** | Signals, `inject()` | Estado derivado y inyección |
+| **Routing** | Angular Router con lazy loading | Carga bajo demanda de componentes |
+| **Auth** | Firebase Authentication | Autenticación con Google y correo |
+| **Database** | Firestore + listeners en tiempo real | Datos NoSQL con sincronización en vivo |
+| **Hosting** | Firebase Hosting | Despliegue y distribución |
+| **Gráficos** | Chart.js + ng2-charts | Visualización de resultados con pastel |
+| **QR** | angularx-qrcode | Generación de códigos QR compartibles |
 
-This project is prepared for Firebase Hosting.
+## Arquitectura del proyecto
 
-- Production build output: `dist/angular-firebase-surveys`
-- Hosting rewrites are configured so Angular routing works on refresh
-- Production survey links use `https://angular-firebase-surveys.web.app`
+- `src/main.ts` arranca la aplicación con `bootstrapApplication()`.
+- `src/app/app.config.ts` registra router, Firebase, Auth, Firestore y Chart.js a nivel global.
+- `src/app/app.routes.ts` define las rutas y carga perezosa de las pantallas principales.
+- `src/app/services/auth.ts` centraliza la autenticación con Firebase.
+- `src/app/surveys/` contiene la creación, detalle y visualización de encuestas.
+- `src/app/guards/auth.guard.ts` protege las rutas privadas.
+- Firestore guarda encuestas y votos en colecciones separadas para mantener el modelo NoSQL ordenado y barato.
 
-To deploy after logging into Firebase, run:
+## Estructura de datos
 
+- `surveys`: colección principal con los datos de cada encuesta.
+- `surveys/{surveyId}/options`: opciones disponibles para votar.
+- `surveys/{surveyId}/votes`: votos emitidos por los usuarios.
+
+Este enfoque facilita consultar resultados en tiempo real y restringir votos duplicados desde las reglas de seguridad.
+
+## Flujo de funcionamiento
+
+### Autenticación
+
+- El usuario puede entrar con Google o con correo y contraseña.
+- Solo usuarios autenticados pueden crear encuestas, votar y ver detalles completos.
+
+### Creación de encuestas
+
+- El formulario solicita título, descripción opcional y al menos dos opciones.
+- Al guardar, la encuesta queda disponible para otros usuarios autenticados.
+
+### Votación
+
+- Cada usuario puede emitir un único voto por encuesta.
+- Firestore Security Rules evitan que un usuario vote dos veces.
+
+### Resultados en tiempo real
+
+- Los cambios en Firestore se reflejan de inmediato en la pantalla de detalle.
+- El gráfico se actualiza automáticamente cuando entran nuevos votos.
+
+### QR de acceso
+
+- Cada encuesta puede compartirse con un QR que apunta a la URL pública del despliegue.
+
+## Seguridad y reglas
+
+- Firebase Authentication protege el acceso a las funciones principales.
+- Firestore Security Rules limitan quién puede crear, editar o votar.
+- El esquema de datos evita duplicar información y reduce lecturas innecesarias.
+
+## Despliegue
+
+- **URL pública:** https://angular-firebase-surveys.web.app
+- **Hosting:** Firebase Hosting configurado para SPA.
+- **Build output:** `dist/angular-firebase-surveys/browser`
+- **Rewrite:** Todo tráfico hacia `/index.html` para Angular routing.
+
+### Configuración inicial de Firebase
+
+1. Instala Firebase CLI si no lo tienes:
+   ```bash
+   npm install -g firebase-tools
+   ```
+
+2. Inicia sesión en Firebase:
+   ```bash
+   firebase login
+   ```
+
+3. Inicializa Firebase en el proyecto (si aún no está hecho):
+   ```bash
+   firebase init hosting
+   ```
+
+### Comandos de despliegue
+
+**Con build:**
 ```bash
-npm run build
-firebase login
-firebase deploy
+npm run build && firebase deploy --only hosting
 ```
 
-If you only want to publish the web app, you can use:
-
+**Solo hosting (si el build ya existe):**
 ```bash
 firebase deploy --only hosting
 ```
 
-## Environment setup
-
-Update the `appUrl` value in the environment file to match your deployment domain so QR codes encode the correct URL.
-
-For production builds, the project uses `src/environments/environment.prod.ts`.
-
-## Development server
-
-To start a local development server, run:
-
+**Deploy completo (hosting + Firestore rules + indexes):**
 ```bash
-ng serve
+firebase deploy
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Desarrollo local
 
-## Code scaffolding
+### Requisitos previos
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Node.js 20+
+- npm o yarn
+- (Opcional) Firebase CLI para emulador
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Instalación y arranque
 
 ```bash
-ng generate --help
+# Instalar dependencias
+npm install --legacy-peer-deps
+
+# Iniciar servidor de desarrollo
+npm start
 ```
 
-## Building
+Abre `http://localhost:4200/` en tu navegador. La app se recargará automáticamente al detectar cambios en el código.
 
-To build the project run:
+### Build de producción
 
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Los artefactos compilados se guardarán en `dist/angular-firebase-surveys/browser`.
 
-## Running unit tests
+## Capturas de pantalla
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Las capturas están organizadas por versión móvil y escritorio para mostrar el comportamiento responsive del sistema.
 
-```bash
-ng test
-```
+### Autenticación
 
-## Running end-to-end tests
+**Móvil**
 
-For end-to-end (e2e) testing, run:
+<p align="center">
+   <img src="docs/screenshots/login_mobile.jpeg" alt="Pantalla de autenticación en móvil" width="360">
+</p>
 
-```bash
-ng e2e
-```
+**Escritorio**
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+<p align="center">
+   <img src="docs/screenshots/login_desktop.jpeg" alt="Pantalla de autenticación en escritorio" width="360">
+</p>
 
-## Additional Resources
+### Menú móvil
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+<p align="center">
+   <img src="docs/screenshots/burger_button_menu_mobile.jpeg" alt="Menú hamburguesa en móvil" width="360">
+</p>
+
+### Creación de encuesta
+
+**Móvil**
+
+<p align="center">
+   <img src="docs/screenshots/new_survey_mobile.jpeg" alt="Formulario de nueva encuesta en móvil" width="360">
+</p>
+
+**Escritorio**
+
+<p align="center">
+   <img src="docs/screenshots/new_survey_desktop.jpeg" alt="Formulario de nueva encuesta en escritorio" width="360">
+</p>
+
+### Lista de encuestas
+
+<p align="center">
+   <img src="docs/screenshots/survey_list_desktop.jpeg" alt="Lista de encuestas en escritorio" width="360">
+</p>
+
+### Detalle y votación
+
+**Móvil**
+
+<p align="center">
+   <img src="docs/screenshots/survey_detail_mobile.jpeg" alt="Detalle de encuesta en móvil" width="360">
+</p>
+
+**Escritorio**
+
+<p align="center">
+   <img src="docs/screenshots/survey_detail_desktop.jpeg" alt="Detalle de encuesta en escritorio" width="360">
+</p>
+
+### QR y resultados
+
+**Móvil**
+
+<p align="center">
+   <img src="docs/screenshots/qr_mobile.jpeg" alt="QR de encuesta en móvil" width="360">
+</p>
+
+**Escritorio**
+
+<p align="center">
+   <img src="docs/screenshots/qr_and_chart_desktop.jpeg" alt="QR y resultados en escritorio" width="360">
+</p>
+
+### Gráfico en móvil
+
+<p align="center">
+   <img src="docs/screenshots/chart_mobile.jpeg" alt="Gráfico de resultados en móvil" width="360">
+</p>
+
+## Decisiones técnicas
+
+### ¿Por qué Angular standalone?
+
+Los componentes standalone reducen la complejidad de la arquitectura, evitan NgModule, y facilitan pruebas unitarias. Con lazy loading, cada ruta carga su componente bajo demanda, optimizando el bundle inicial.
+
+### ¿Por qué Signals?
+
+Signals reemplazan RxJS observables en Angular 20 para estado simple y derivado. Son más previsibles, tienen mejor performance en change detection y hacen el código más legible que las subscripciones manuales.
+
+### ¿Por qué subcolecciones en Firestore?
+
+Mantener `surveys/{surveyId}/votes` como subcolección permiteStructu consultas rápidas y eficientes (muy importante en la capa gratuita de Firebase), además que facilita aplicar reglas de seguridad granulares por votante.
+
+### ¿Por qué Chart.js con pastel?
+
+Un gráfico de pastel es intuitivo para mostrar proporciones de votos en una encuesta. Chart.js es ligero, flexible y se integra bien con Angular via ng2-charts, con capacidad de listeners en tiempo real.
+
+### ¿Por qué QR?
+
+Un QR es la forma más rápida de compartir una encuesta en redes sociales o por WhatsApp sin que el usuario tenga que escribir un enlace largo.
+
+### ¿Por qué mobile first?
+
+El 80% del tráfico web es mobile. Comienza con estilos base para dispositivos pequeños y escala hacia arriba evita estilos conflictivos y garantiza que todos los breakpoints funcionen.
+
+### ¿Por qué Firebase Hosting?
+
+Firebase Hosting integrado simplifica el despliegue (sin configurar servidores), ofrece HTTPS automático, CDN global, redirecciones SPA nativas, y acoplamiento natural con Authentication y Firestore.
+
+## Notas finales
+
+- La aplicación fue construida sin `NgModule` estrategia moderna de Angular.
+- Se priorizó un diseño **mobile first** para funcionar bien en teléfonos.
+- Los resultados se muestran con un **gráfico de pastel** para lectura simple y directa.
+- Todas las reglas de seguridad están documentadas en `firestore.rules`.
+
+## Licencia
+
+Proyecto académico para la actividad EIF209.
