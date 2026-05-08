@@ -1,12 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
 :host {
   display: block;
   min-height: 100%;
   padding: 32px 20px 64px;
   background: radial-gradient(900px circle at 80% -20%, #efe8ff 0%, #ffffff 55%);
   color: #1d152d;
-  font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
 }
 
 *,
@@ -114,6 +112,28 @@ h1 {
   font-size: 0.86rem;
   color: #5e3dd4;
   word-break: break-all;
+}
+
+.chart-block {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.chart-block h3 {
+  margin: 0;
+}
+
+.chart-container {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #e3d8ff;
+  background: linear-gradient(135deg, rgba(240, 233, 255, 0.5), rgba(255, 255, 255, 0.8));
+  box-shadow: 0 10px 20px rgba(98, 60, 186, 0.08);
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .field {
@@ -280,6 +300,13 @@ button:disabled {
   margin: 0 0 10px;
 }
 
+.vote-count {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  color: #5b4b79;
+  font-weight: 500;
+}
+
 .options-grid {
   list-style: none;
   padding: 0;
@@ -289,9 +316,60 @@ button:disabled {
   gap: 12px;
 }
 
+/* Styles for survey listing to match app visual language */
+.survey-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.survey-card {
+  display: block;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid #e3d8ff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(245,241,255,0.6));
+  box-shadow: 0 12px 24px rgba(98, 60, 186, 0.06);
+}
+
+.survey-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.05rem;
+  color: #1d152d;
+}
+
+.survey-card .subtitle {
+  margin: 0 0 10px 0;
+  color: #5b4b79;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.card-actions .ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.vote-btn.primary {
+  width: auto;
+  justify-self: start;
+}
+
 .option-card {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
@@ -299,6 +377,14 @@ button:disabled {
   border: 1px solid #e3d8ff;
   background: linear-gradient(135deg, rgba(240, 233, 255, 0.9), rgba(255, 255, 255, 0.9));
   box-shadow: 0 10px 20px rgba(98, 60, 186, 0.08);
+}
+
+.vote-percentage {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7a5ad6;
+  min-width: 40px;
+  text-align: right;
 }
 
 .option-index {

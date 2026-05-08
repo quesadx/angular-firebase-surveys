@@ -19,10 +19,21 @@ import { NgIf } from '@angular/common';
 
         <!-- Center: Navigation Links -->
         <div class="nav-links">
-          <a routerLink="/surveys/new" routerLinkActive="active-link" class="nav-link"
+          <a
+            routerLink="/surveys/new"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link"
             >New Survey</a
           >
-          <a routerLink="/surveys/wip" routerLinkActive="active-link" class="nav-link">Explore</a>
+          <a
+            routerLink="/surveys"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link"
+          >
+            Explore
+          </a>
         </div>
 
         <!-- Right side: User Options -->
