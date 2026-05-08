@@ -14,7 +14,7 @@ import { NgIf } from '@angular/common';
         <!-- Left side: Brand -->
         <div class="nav-brand">
           <span class="logo-icon">📊</span>
-          <span class="brand-text">SurVot</span>
+          <span class="brand-text">Angular-Surveys</span>
         </div>
 
         <!-- Center: Navigation Links -->
