@@ -11,7 +11,6 @@ Aplicación web de encuestas en tiempo real desarrollada con **Angular 20** y **
 - [Descripción general](#descripción-general)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Arquitectura del proyecto](#arquitectura-del-proyecto)
-- [Requerimientos cumplidos](#requerimientos-cumplidos)
 - [Despliegue](#despliegue)
 - [Desarrollo local](#desarrollo-local)
 - [Capturas de pantalla](#capturas-de-pantalla)
