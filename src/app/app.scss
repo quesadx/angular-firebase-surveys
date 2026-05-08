@@ -1,0 +1,124 @@
+:host {
+  display: block;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.app-content {
+  /* Mismo fondo general por si el componente interno no lo tiene */
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.modern-navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.brand-text {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #1d152d;
+  letter-spacing: -0.5px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.25rem;
+  transition: color 0.2s;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-link:hover {
+  color: #7a5ad6;
+}
+
+.active-link {
+  color: #7a5ad6;
+  border-bottom-color: #7a5ad6;
+}
+
+/* Remove persistent browser focus ring for nav links and provide subtle focus-visible
+   which matches the brand without the default heavy outline */
+.nav-link:focus {
+  outline: none;
+  box-shadow: none;
+}
+.nav-link:focus-visible {
+  box-shadow: 0 6px 18px rgba(122, 90, 214, 0.12);
+  border-bottom-color: rgba(122, 90, 214, 0.6);
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-greeting {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.user-greeting strong {
+  color: #1d152d;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #fca5a5;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #fef2f2;
+  border-color: #ef4444;
+}
+
+/* Responsivo básico */
+@media (max-width: 640px) {
+  .nav-links,
+  .user-greeting {
+    display: none;
+  }
+}

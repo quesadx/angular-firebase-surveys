@@ -1,6 +1,63 @@
 # AngularFirebaseSurveys
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.9.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.25.
+
+## Project overview
+
+Angular + Firebase survey app that lets users create surveys, share them via QR codes, and view details in real time.
+
+## Tech stack
+
+- Angular standalone components, Signals, `inject()`, and lazy-loaded routes
+- Firebase Authentication, Firestore, and Firebase Hosting
+- Chart.js + ng2-charts for real-time results
+- angularx-qrcode for QR code generation
+
+## Architecture
+
+- `src/main.ts` boots the app with `bootstrapApplication()`.
+- `src/app/app.config.ts` registers router, Firebase, Firestore, Auth, and charts providers.
+- `src/app/app.routes.ts` uses lazy-loaded standalone components.
+- Firestore stores surveys in `surveys` and votes in `surveys/{surveyId}/votes`.
+
+## Project status
+
+The application already covers the core assignment requirements:
+
+- Authentication with Firebase Auth
+- Survey creation and list view
+- Single vote per user enforced by Firestore rules
+- Real-time vote updates with Firestore listeners
+- Pie chart visualization for survey results
+- QR code to access each survey quickly
+
+## Deployment
+
+This project is prepared for Firebase Hosting.
+
+- Production build output: `dist/angular-firebase-surveys`
+- Hosting rewrites are configured so Angular routing works on refresh
+- Production survey links use `https://angular-firebase-surveys.web.app`
+
+To deploy after logging into Firebase, run:
+
+```bash
+npm run build
+firebase login
+firebase deploy
+```
+
+If you only want to publish the web app, you can use:
+
+```bash
+firebase deploy --only hosting
+```
+
+## Environment setup
+
+Update the `appUrl` value in the environment file to match your deployment domain so QR codes encode the correct URL.
+
+For production builds, the project uses `src/environments/environment.prod.ts`.
 
 ## Development server
 
@@ -38,7 +95,7 @@ This will compile your project and store the build artifacts in the `dist/` dire
 
 ## Running unit tests
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
 
 ```bash
 ng test
