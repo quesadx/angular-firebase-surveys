@@ -1,12 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
 :host {
   display: block;
   min-height: 100%;
   padding: 32px 20px 64px;
   background: radial-gradient(900px circle at 80% -20%, #efe8ff 0%, #ffffff 55%);
   color: #1d152d;
-  font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
 }
 
 *,
