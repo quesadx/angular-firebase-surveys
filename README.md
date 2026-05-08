@@ -170,53 +170,75 @@ Las capturas están organizadas por versión móvil y escritorio para mostrar el
 
 **Móvil**
 
-![Pantalla de autenticación en móvil](docs/screenshots/login_mobile.jpeg)
+<p align="center">
+   <img src="docs/screenshots/login_mobile.jpeg" alt="Pantalla de autenticación en móvil" width="360">
+</p>
 
 **Escritorio**
 
-![Pantalla de autenticación en escritorio](docs/screenshots/login_desktop.jpeg)
+<p align="center">
+   <img src="docs/screenshots/login_desktop.jpeg" alt="Pantalla de autenticación en escritorio" width="360">
+</p>
 
 ### Menú móvil
 
-![Menú hamburguesa en móvil](docs/screenshots/burger_button_menu_mobile.jpeg)
+<p align="center">
+   <img src="docs/screenshots/burger_button_menu_mobile.jpeg" alt="Menú hamburguesa en móvil" width="360">
+</p>
 
 ### Creación de encuesta
 
 **Móvil**
 
-![Formulario de nueva encuesta en móvil](docs/screenshots/new_survey_mobile.jpeg)
+<p align="center">
+   <img src="docs/screenshots/new_survey_mobile.jpeg" alt="Formulario de nueva encuesta en móvil" width="360">
+</p>
 
 **Escritorio**
 
-![Formulario de nueva encuesta en escritorio](docs/screenshots/new_survey_desktop.jpeg)
+<p align="center">
+   <img src="docs/screenshots/new_survey_desktop.jpeg" alt="Formulario de nueva encuesta en escritorio" width="360">
+</p>
 
 ### Lista de encuestas
 
-![Lista de encuestas en escritorio](docs/screenshots/survey_list_desktop.jpeg)
+<p align="center">
+   <img src="docs/screenshots/survey_list_desktop.jpeg" alt="Lista de encuestas en escritorio" width="360">
+</p>
 
 ### Detalle y votación
 
 **Móvil**
 
-![Detalle de encuesta en móvil](docs/screenshots/survey_detail_mobile.jpeg)
+<p align="center">
+   <img src="docs/screenshots/survey_detail_mobile.jpeg" alt="Detalle de encuesta en móvil" width="360">
+</p>
 
 **Escritorio**
 
-![Detalle de encuesta en escritorio](docs/screenshots/survey_detail_desktop.jpeg)
+<p align="center">
+   <img src="docs/screenshots/survey_detail_desktop.jpeg" alt="Detalle de encuesta en escritorio" width="360">
+</p>
 
 ### QR y resultados
 
 **Móvil**
 
-![QR de encuesta en móvil](docs/screenshots/qr_mobile.jpeg)
+<p align="center">
+   <img src="docs/screenshots/qr_mobile.jpeg" alt="QR de encuesta en móvil" width="360">
+</p>
 
 **Escritorio**
 
-![QR y resultados en escritorio](docs/screenshots/qr_and_chart_desktop.jpeg)
+<p align="center">
+   <img src="docs/screenshots/qr_and_chart_desktop.jpeg" alt="QR y resultados en escritorio" width="360">
+</p>
 
 ### Gráfico en móvil
 
-![Gráfico de resultados en móvil](docs/screenshots/chart_mobile.jpeg)
+<p align="center">
+   <img src="docs/screenshots/chart_mobile.jpeg" alt="Gráfico de resultados en móvil" width="360">
+</p>
 
 ## Decisiones técnicas
 
