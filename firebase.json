@@ -6,7 +6,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "dist/angular-firebase-surveys",
+    "public": "dist/angular-firebase-surveys/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
