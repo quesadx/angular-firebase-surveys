@@ -21,8 +21,8 @@
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.5rem;
-  height: 64px;
+  padding: 0 0.75rem;
+  height: 58px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,18 +35,18 @@
 }
 
 .logo-icon {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .brand-text {
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   color: #1d152d;
   letter-spacing: -0.5px;
 }
 
 .nav-links {
-  display: flex;
+  display: none;
   gap: 1.5rem;
 }
 
@@ -83,10 +83,11 @@
 .nav-user {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.65rem;
 }
 
 .user-greeting {
+  display: none;
   font-size: 0.9rem;
   color: #475569;
 }
@@ -102,9 +103,9 @@
   background-color: transparent;
   color: #ef4444;
   border: 1px solid #fca5a5;
-  padding: 0.4rem 0.75rem;
+  padding: 0.35rem 0.6rem;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -115,10 +116,40 @@
   border-color: #ef4444;
 }
 
-/* Responsivo básico */
-@media (max-width: 640px) {
-  .nav-links,
+@media (min-width: 640px) {
+  .navbar-container {
+    padding: 0 1.25rem;
+    height: 64px;
+  }
+
+  .logo-icon {
+    font-size: 1.45rem;
+  }
+
+  .brand-text {
+    font-size: 1.15rem;
+  }
+
+  .nav-links {
+    display: flex;
+  }
+
+  .nav-user {
+    gap: 1.25rem;
+  }
+
   .user-greeting {
-    display: none;
+    display: inline;
+  }
+
+  .logout-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .navbar-container {
+    padding: 0 1.5rem;
   }
 }
